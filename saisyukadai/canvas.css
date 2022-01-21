@@ -1,0 +1,96 @@
+/* Google Fonts 読み込み */
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
+
+/* ▼タブ */
+#tabcontrol a {
+  display: inline-block;            /* インラインブロック化 */
+  border-width: 1px 1px 0px 1px;    /* 下以外の枠線を引く */
+  border-style: solid;              /* 枠線の種類：実線 */
+  border-color: black;              /* 枠線の色：黒色 */
+  border-radius: 0.75em 0.75em 0 0; /* 枠線の左上角と右上角だけを丸く */
+  padding: 0.75em 1em;              /* 内側の余白 */
+  text-decoration: none;            /* リンクの下線を消す */
+  color: rgb(248, 242, 242);       
+  font-weight: bold;                /* 太字 */
+  position: relative;               /* JavaScriptでz-indexを調整するために必要 */
+}
+/* ▼タブにマウスポインタが載った際(任意) */
+#tabcontrol a:hover {
+  text-decoration: underline;       /* 文字に下線を引く */
+}
+
+#tabcontrol a:nth-child(1), #tabbody div:nth-child(1) { background-color: #120d31;margin-top: -40px; }/* 1つ目のタブとその中身用の配色 */
+#tabcontrol a:nth-child(2), #tabbody div:nth-child(2) { background-color: #67c2ce;margin-top: -40px; }/* 2つ目のタブとその中身用の配色 */
+
+
+
+/* 日付のスタイル */
+.clock-date {
+  font-family: 'Share Tech Mono', monospace;
+  color: #daf6ff;
+  text-shadow: 0 0 20px #0aafe6;
+  line-height: 1.2;
+  text-align: center;
+  font-size: 25px;
+  padding-top: 60px;
+}
+
+/* 時間のスタイル */
+.clock-time {
+  font-family: 'Share Tech Mono', monospace;
+  color: #daf6ff;
+  text-shadow: 0 0 20px #0aafe6;
+  line-height: 1.2;
+  text-align: center;
+  font-size: 150px;
+  margin-top: 0px;
+}
+
+/* 文字サイズ調整 */
+@media screen and (max-width: 700px) {
+  .clock-date {
+    font-size: 5vw;
+  }
+  .clock-time {
+    font-size: 20vw;
+  }
+}
+
+.canvasArea { background:#120d31; margin-bottom:0px; width: 100%;margin-top:0px;}
+
+
+/*ストップウォッチ*/
+
+input[type="text"]{
+  background-color: rgb(20, 23, 83);
+  font-size: 100px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #daf6ff;
+  text-shadow: 0 0 20px #0aafe6;
+  line-height: 1.2;
+  position: fixed;
+  border-width: 1px 1px 1px 1px;  
+  border-style: solid;  
+  text-align: center;
+  left: 50%;
+  margin-left: -160px;
+  margin-top: 20px;
+  
+  
+}
+
+input[type="button"]{
+  width: 100px;  
+  height: 36px; 
+  position: relative;
+  left: 20%;
+  margin-left: 10px;
+  margin-top: 250px;
+  margin-bottom: 30px;
+ 
+}
+
+input[type="button"]:hover{
+  background-color: rgb(194, 181, 238);
+  
+}

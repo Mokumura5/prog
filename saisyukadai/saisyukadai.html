@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブラウザ時計</title>
+  <link rel="stylesheet" href="css/canvas.css">
+</head>
+
+<body>
+      <p id="tabcontrol">
+          <a href="#tabpage1">デジタル時計</a>
+          <a href="#tabpage2">タイマー</a>
+      </p>
+
+      　<div id="tabbody">
+          <div id="tabpage1">.
+              <p class="clock"></p>
+              <p class="clock-date"></p>
+              <p class="clock-time"></p>
+              <p id="tabcontrol"></p>
+              <canvas id="sineCanvas" class="canvasArea"></canvas>
+              <div id="canvas-container"></div>
+          </div>
+    
+          <div id="tabpage2">
+            <form name="ktimer" onSubmit="return false;">
+            <input type="text" name="counter" size="6">
+            <input type="button" name="b_start" size="10" value="スタート" onClick="count_start()">
+            <input type="button" name="b_stop" size="10" value="ストップ" onClick="count_stop()">
+            <input type="button" name="b_reset" size="10" value="リセット" onClick="count_reset()">
+            <input type="button" size="10" value="3分" onClick="set_timer(180)">
+            <input type="button" size="10" value="15分" onClick="set_timer(900)">
+
+            </form>
+            </div>
+       </div>
+
+
+     <script>
+          const clock = () => {
+          // 現在の日時・時刻の情報を取得
+          const d = new Date();
+
+
+          let year = d.getFullYear();
+          
+          let month = d.getMonth() + 1;
+          
+          let date = d.getDate();
+          
+          let dayNum = d.getDay();
+
+          const weekday = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+          let day = weekday[dayNum];
+
+          let hour = d.getHours();
+          
+          let min = d.getMinutes();
+          
+          let sec = d.getSeconds();
+
+          // 1桁の場合は0を足して2桁に
+          month = month < 10 ? "0" + month : month;
+          date = date < 10 ? "0" + date : date;
+          hour = hour < 10 ? "0" + hour : hour;
+          min = min < 10 ? "0" + min : min;
+          sec = sec < 10 ? "0" + sec : sec;
+
+          // 日付・時刻の文字列を作成
+          let today = `${year}.${month}.${date} ${day}`;
+          let time = `${hour}:${min}:${sec}`;
+
+          // 文字列を出力
+          document.querySelector(".clock-date").innerText = today;
+          document.querySelector(".clock-time").innerText = time;
+          };
+
+          // 1秒ごとにclock関数を呼び出す
+          setInterval(clock, 1000);
+
+
+          (function () {
+        
+          var unit = 100,
+              canvas, context, canvas2, context2,
+              height, width, xAxis, yAxis,
+              draw;
+          
+
+          function init() {
+              
+              canvas = document.getElementById("sineCanvas");
+              
+              canvas.width = document.documentElement.clientWidth; //Canvasのwidthをウィンドウの幅に合わせる
+              canvas.height = 200;
+              
+              context = canvas.getContext("2d");
+              
+              height = canvas.height;
+              width = canvas.width;
+              
+              xAxis = Math.floor(height/2);
+              yAxis = 0;
+              
+              draw();
+          }
+          
+          function draw() {
+              
+              // キャンバスの描画をクリア
+              context.clearRect(0, 0, width, height);
+          
+              //波を描画
+              drawWave('#10c2cd', 1, 3, 0);　
+              
+              // Update the time and draw again
+              draw.seconds = draw.seconds + .009;
+              draw.t = draw.seconds*Math.PI;
+              setTimeout(draw, 35);
+          };
+              draw.seconds = 0;
+              draw.t = 0;
+          
+          //波を描画 drawWave(色, 不透明度, 波の幅のzoom, 波の開始位置の遅れ)//
+          function drawWave(color, alpha, zoom, delay) {
+
+              context.fillStyle = color;
+              context.globalAlpha = alpha;
+              context.beginPath(); //パスの開始
+              drawSine(draw.t / 0.5, zoom, delay);
+              context.lineTo(width + 10, height); //パスをCanvasの右下へ
+              context.lineTo(0, height); //パスをCanvasの左下へ
+              context.closePath() //パスを閉じる
+              context.fill(); //塗りつぶす
+          }
+          
+          //(時間, 波の幅のzoom, 波の開始位置の遅れ)//
+          function drawSine(t, zoom, delay) {
+
+              var x = t; //時間を横の位置とする
+              var y = Math.sin(x)/zoom;
+              context.moveTo(yAxis, unit*y+xAxis); //スタート位置にパスを置く
+              
+              // ループ(横幅の分、波を描画)
+              for (i = yAxis; i <= width + 10; i += 10) {
+                  x = t+(-yAxis+i)/unit/zoom;
+                  y = Math.sin(x - delay)/3;
+                  context.lineTo(i, unit*y+xAxis);
+              }
+          }
+          
+          init();
+              
+          })();
+       </script>
+
+       <script type="text/javascript">
+        // ---------------------------
+        // ▼A：対象要素を得る
+        // ---------------------------
+        var tabs = document.getElementById('tabcontrol').getElementsByTagName('a');
+        var pages = document.getElementById('tabbody').getElementsByTagName('div');
+        
+        // ---------------------------
+        // ▼B：タブの切り替え処理
+        // ---------------------------
+        function changeTab() {
+          // ▼B-1. href属性値から対象のid名を抜き出す
+          var targetid = this.href.substring(this.href.indexOf('#')+1,this.href.length);
+        
+          // ▼B-2. 指定のタブページだけを表示する
+          for(var i=0; i<pages.length; i++) {
+              if( pages[i].id != targetid ) {
+                pages[i].style.display = "none";
+              }
+              else {
+                pages[i].style.display = "block";
+              }
+          }
+        
+          // ▼B-3. クリックされたタブを前面に表示する
+          for(var i=0; i<tabs.length; i++) {
+              tabs[i].style.zIndex = "0";
+          }
+          this.style.zIndex = "10";
+        
+          // ▼B-4. ページ遷移しないようにfalseを返す
+          return false;
+        }
+        
+        // ---------------------------
+        // ▼C：すべてのタブに対して、クリック時にchangeTab関数が実行されるよう指定する
+        // ---------------------------
+        for(var i=0; i<tabs.length; i++) {
+          tabs[i].onclick = changeTab;
+        }
+        
+        // ---------------------------
+        // ▼D：最初は先頭のタブを選択しておく
+        // ---------------------------
+        tabs[0].onclick();
+
+      </script>
+
+      
+
+      <script type="text/javascript">//ストップウォッチ
+        //初期設定
+        def_count = 10;
+        document.ktimer.counter.value = def_count;
+        document.ktimer.b_start.disabled = false;
+        timer_reset()
+
+        function timer_reset(){
+          //taimerの初期化
+          timerID = 0;//タイマーの二重起動を防ぐ
+          document.ktimer.counter.value = def_count;
+          document.ktimer.b_start.disabled = false;//タイマーの二重起動を防ぐ
+       }
+
+       function timer_stop(){
+          //taimerの初期化
+          timerID = 0;//タイマーの二重起動を防ぐ
+          document.ktimer.b_start.disabled = false;//タイマーの二重起動を防ぐ
+       }
+
+       function countdown() {
+          //カウント表示
+          count--;
+          document.ktimer.counter.value = count_format(count);
+          if (count <= 0) {
+          　count_stop();
+         }	
+        }
+      
+        function count_start() {
+          //カウント開始
+          count = document.ktimer.counter.value;
+          document.ktimer.b_start.disabled = true;
+          timerID = setInterval('countdown()',1000);
+        }
+        
+        
+
+        //分:秒の表示
+        function count_format(num) {
+          //カウント表示の書式設定
+          var tm,ts;
+          tm = Math.floor(num / 60); //分
+          ts = num % 60; //秒
+          if (ts < 10) ts = "0" + ts;
+          return tm + ":" + ts;
+      　}
+
+        function count_reset() {
+          //カウントリセット
+          clearInterval(timerID);
+          timer_reset();
+        }
+
+       function count_stop(){
+         //カウント停止
+          clearInterval(timerID);
+          timer_stop();
+       }
+        
+
+        function set_timer(num) {
+          //規定時間の設定
+          if (timerID > 0) {
+            count_stop();
+          }
+          document.ktimer.counter.value = num;
+          count_start();
+       }
+        </script>
+        
+        
+        
+</div>
+</html>
